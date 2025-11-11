@@ -1,5 +1,8 @@
 #include "hw7.h"
 
+
+//Jake Barbaresso 115877069
+
 bst_sf* insert_bst_sf(matrix_sf *mat, bst_sf *root) {
     //if tree is empty (root== NULL), create new node and return it
     if (root == NULL) {
@@ -24,10 +27,41 @@ bst_sf* insert_bst_sf(matrix_sf *mat, bst_sf *root) {
 }
 
 matrix_sf* find_bst_sf(char name, bst_sf *root) {
-    
+    //reached leaf or empty subtree
+    if (root == NULL) {
+        return NULL;
+    }
+
+    // Found matching name
+    if (root->mat->name == name) {
+        return root->mat;
+    }
+
+    // Search left child if name is smaller
+    if (name < root->mat->name) {
+        return find_bst_sf(name, root->left_child);
+    } 
+    //if name is not smaller, then search right child
+    else {
+        return find_bst_sf(name, root->right_child);
+    }
 }
 
 void free_bst_sf(bst_sf *root) {
+    //base case: if root is null, nothing to free
+    if (root == NULL) {
+        return;
+    }
+
+    //recursively free the left and right subtrees
+    free_bst_sf(root->left_child);
+    free_bst_sf(root->right_child);
+
+    //free the matrix at this node
+    free(root->mat);
+
+    //finally free the node itself
+    free(root);
 }
 
 matrix_sf* add_mats_sf(const matrix_sf *mat1, const matrix_sf *mat2) {
