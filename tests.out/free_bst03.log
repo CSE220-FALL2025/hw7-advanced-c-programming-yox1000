@@ -1,0 +1,13 @@
+==192077== Memcheck, a memory error detector
+==192077== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==192077== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==192077== Command: ./bin/free_bst03
+==192077== 
+==192077== 
+==192077== HEAP SUMMARY:
+==192077==     in use at exit: 0 bytes in 0 blocks
+==192077==   total heap usage: 38 allocs, 38 frees, 684 bytes allocated
+==192077== 
+==192077== All heap blocks were freed -- no leaks are possible
+==192077== 
+==192077== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

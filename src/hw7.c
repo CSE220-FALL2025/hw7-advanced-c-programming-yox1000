@@ -150,8 +150,6 @@ matrix_sf* transpose_mat_sf(const matrix_sf *mat) {
 }
 
 matrix_sf* create_matrix_sf(char name, const char *expr) {   
-    m->name = name;
-
     unsigned int rows = 0, cols = 0;
     const char *ptr = expr;
     //first parse the number of rows and columns
@@ -160,9 +158,10 @@ matrix_sf* create_matrix_sf(char name, const char *expr) {
     //we can now allocate memory for the matrix based off the parsed dimensions
     matrix_sf *m = malloc(sizeof(matrix_sf) + rows * cols * sizeof(int));
     if (!m) return NULL; //if malloc fails return null for safe exit
-
+    
     m->num_rows = rows;
     m->num_cols = cols;
+    m->name = name;
 
     int offset = 0;
     sscanf(ptr, "%u %u%n", &rows, &cols, &offset);
@@ -188,26 +187,191 @@ matrix_sf* create_matrix_sf(char name, const char *expr) {
             ptr++;
         }
     }
+    return m;
 
 }
 
 char* infix2postfix_sf(char *infix) {
-    return NULL;
+    //predecence levels for operators from highest to lowest are transpose, multiply, add
+    int prec[256] = {0};
+    prec['+'] = 1;
+    prec['*'] = 2;
+    prec['\''] = 3;    
+
+    char *postfix = malloc(strlen(infix) + 1);
+    int out_i = 0;
+
+    char stack[512];
+    int top = -1;
+
+    for (int i = 0; infix[i] != '\0'; i++) {
+        char ch = infix[i];
+
+        //skip spaces
+        if (ch == ' ' || ch == '\t')
+            continue;
+
+        //if operand uppercase letter
+        if (ch >= 'A' && ch <= 'Z') {
+            postfix[out_i++] = ch;
+        }
+        //if left parenthesis
+        else if (ch == '(') {
+            stack[++top] = ch;
+        }
+        //else if right parenthesis
+        else if (ch == ')') {
+            // pop until '('
+            while (top >= 0 && stack[top] != '(') {
+                postfix[out_i++] = stack[top--];
+            }
+            top--;
+        }
+        //if operator is one of following: +, *, '
+        else if (ch == '+' || ch == '*' || ch == '\'') {
+            //pop higher or equal precedence operators from stack
+            while (top >= 0 && stack[top] != '(' &&
+                   prec[(int)stack[top]] >= prec[(int)ch]) {
+                postfix[out_i++] = stack[top--];
+            }
+            stack[++top] = ch;
+        }
+    }
+
+    //pop the rest of stack
+    while (top >= 0) {
+        postfix[out_i++] = stack[top--];
+    }
+
+    postfix[out_i] = '\0';
+    return postfix;
+
 }
 
 matrix_sf* evaluate_expr_sf(char name, char *expr, bst_sf *root) {
-    return NULL;
+    //convert to postfix
+    char *postfix = infix2postfix_sf(expr);
+
+    //stack of matrix pointers
+    matrix_sf *stack[512];
+    int top = -1;
+
+    for (int i = 0; postfix[i] != '\0'; i++) {
+        char ch = postfix[i];
+
+        //operand is uppercase letter
+        if (ch >= 'A' && ch <= 'Z') {
+            matrix_sf *m = find_bst_sf(ch, root);
+            stack[++top] = m;
+        }
+        else if (ch == '\'') {   
+            matrix_sf *A = stack[top--];
+            matrix_sf *R = transpose_mat_sf(A);
+            R->name = 'N';
+            stack[++top] = R;
+
+            //if A was temporary then free it
+            if (!(A->name >= 'A' && A->name <= 'Z')) {
+                free(A);
+            }
+        }
+        else if (ch == '+' || ch == '*') {
+            //if binary operators (+ or *), pop two operands
+            matrix_sf *B = stack[top--];
+            matrix_sf *A = stack[top--];
+
+            matrix_sf *R = NULL;
+
+            if (ch == '+')
+                R = add_mats_sf(A, B);
+            else
+                R = mult_mats_sf(A, B);
+
+            R->name = 'N';
+            stack[++top] = R;
+
+            // free temp operands
+            if (!(A->name >= 'A' && A->name <= 'Z')) {
+                free(A);
+            }
+            if (!(B->name >= 'A' && B->name <= 'Z')) {
+                free(B);
+            }
+        }
+    }
+
+    //final matrix on top
+    matrix_sf *res = stack[top];
+
+    //rename result to name
+    res->name = name;
+
+    //free
+    free(postfix);
+
+    return res;
 }
 
 matrix_sf *execute_script_sf(char *filename) {
-   return NULL;
+   FILE *fp = fopen(filename, "r");
+    if (!fp) return NULL;
+
+    bst_sf *root = NULL;
+    matrix_sf *last = NULL;
+
+    char *line = NULL;
+    size_t size = 0;
+
+    while (getline(&line, &size, fp) != -1) {
+
+        //skip the empty lines
+        if (line[0] == '\n' || line[0] == '\0')
+            continue;
+
+        //the name is the first non-space uppercase
+        char *p = line;
+        while (*p == ' ') p++;
+        char name = *p;
+
+        // go past name, skip spaces, skip '='
+        p++;
+        while (*p == ' ') p++;
+        p++; // skip '='
+        while (*p == ' ') p++;
+
+        // if the next character is a digit then its a matrix literal
+        if (*p >= '0' && *p <= '9') {
+            matrix_sf *m = create_matrix_sf(name, p);
+            root = insert_bst_sf(m, root);
+            last = m;
+        }
+        // else if it's an expression
+        else {
+            matrix_sf *m = evaluate_expr_sf(name, p, root);
+            root = insert_bst_sf(m, root);
+            last = m;
+        }
+    }
+
+    free(line);
+    fclose(fp);
+
+    matrix_sf *final = NULL;
+    if (last != NULL) {
+        final = copy_matrix(last->num_rows, last->num_cols, last->values);
+        final->name = last->name;
+    }
+
+    //Free all matrices stored in the BST
+    free_bst_sf(root);
+    return final;
 }
 
 // This is a utility function used during testing. Feel free to adapt the code to implement some of
 // the assignment. Feel equally free to ignore it.
 matrix_sf *copy_matrix(unsigned int num_rows, unsigned int num_cols, int values[]) {
     matrix_sf *m = malloc(sizeof(matrix_sf)+num_rows*num_cols*sizeof(int));
-    m->name = '?';
+    m->name = 'N';
     m->num_rows = num_rows;
     m->num_cols = num_cols;
     memcpy(m->values, values, num_rows*num_cols*sizeof(int));

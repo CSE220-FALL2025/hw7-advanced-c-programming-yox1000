@@ -1,0 +1,14 @@
+==192036== Memcheck, a memory error detector
+==192036== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==192036== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==192036== Command: ./bin/execute_script script19
+==192036== 
+6 2 33 -6 -22 123 -36 47 63 -127 -65 -142 53 52
+==192036== 
+==192036== HEAP SUMMARY:
+==192036==     in use at exit: 0 bytes in 0 blocks
+==192036==   total heap usage: 13 allocs, 13 frees, 9,104 bytes allocated
+==192036== 
+==192036== All heap blocks were freed -- no leaks are possible
+==192036== 
+==192036== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
