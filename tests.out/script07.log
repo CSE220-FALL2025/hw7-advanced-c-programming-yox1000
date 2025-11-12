@@ -1,26 +1,14 @@
-==191896== Memcheck, a memory error detector
-==191896== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
-==191896== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
-==191896== Command: ./bin/execute_script script07
-==191896== 
+==248133== Memcheck, a memory error detector
+==248133== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==248133== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==248133== Command: ./bin/execute_script script07
+==248133== 
 3 4 20 -16 10 -46 61 -49 -2 -9 185 25 -21 -45
-==191896== 
-==191896== HEAP SUMMARY:
-==191896==     in use at exit: 60 bytes in 1 blocks
-==191896==   total heap usage: 15 allocs, 14 frees, 9,251 bytes allocated
-==191896== 
-==191896== 60 bytes in 1 blocks are definitely lost in loss record 1 of 1
-==191896==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==191896==    by 0x1095BC: add_mats_sf (hw7.c:73)
-==191896==    by 0x109EC2: evaluate_expr_sf (hw7.c:286)
-==191896==    by 0x10A123: execute_script_sf (hw7.c:350)
-==191896==    by 0x1093AE: main (execute_script.c:8)
-==191896== 
-==191896== LEAK SUMMARY:
-==191896==    definitely lost: 60 bytes in 1 blocks
-==191896==    indirectly lost: 0 bytes in 0 blocks
-==191896==      possibly lost: 0 bytes in 0 blocks
-==191896==    still reachable: 0 bytes in 0 blocks
-==191896==         suppressed: 0 bytes in 0 blocks
-==191896== 
-==191896== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==248133== 
+==248133== HEAP SUMMARY:
+==248133==     in use at exit: 0 bytes in 0 blocks
+==248133==   total heap usage: 15 allocs, 15 frees, 9,250 bytes allocated
+==248133== 
+==248133== All heap blocks were freed -- no leaks are possible
+==248133== 
+==248133== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -77,7 +77,7 @@ matrix_sf* add_mats_sf(const matrix_sf *mat1, const matrix_sf *mat2) {
         return NULL;
     }
 
-    result->name = 'N'; //assign default name or modify as needed
+    result->name = '?'; //assign default name or modify as needed
     result->num_rows = r;
     result->num_cols = c;
 
@@ -101,7 +101,7 @@ matrix_sf* mult_mats_sf(const matrix_sf *mat1, const matrix_sf *mat2) {
     // Result matrix is m × p
     matrix_sf *result = malloc(sizeof(matrix_sf) + m * p * sizeof(int));
     if (!result) return NULL;  //if malloc failed providesafe exit
-    result->name = 'N'; //assign default name or modify as needed
+    result->name = '?'; //assign default name or modify as needed
     //resulting matrix will have dimesnsions m x p
     result->num_rows = m;
     result->num_cols = p;
@@ -134,7 +134,7 @@ matrix_sf* transpose_mat_sf(const matrix_sf *mat) {
         return NULL; //if malloc fails return null for safe exit
     }
 
-    result->name = 'N'; //assign default name or modify as needed
+    result->name = '?'; //assign default name or modify as needed
     result->num_rows = c; //transposed rows = original columns
     result->num_cols = r; //transposed columns = original rows
 
@@ -267,7 +267,7 @@ matrix_sf* evaluate_expr_sf(char name, char *expr, bst_sf *root) {
         else if (ch == '\'') {   
             matrix_sf *A = stack[top--];
             matrix_sf *R = transpose_mat_sf(A);
-            R->name = 'N';
+            R->name = '?';
             stack[++top] = R;
 
             //if A was temporary then free it
@@ -287,7 +287,7 @@ matrix_sf* evaluate_expr_sf(char name, char *expr, bst_sf *root) {
             else
                 R = mult_mats_sf(A, B);
 
-            R->name = 'N';
+            R->name = '?';
             stack[++top] = R;
 
             // free temp operands
@@ -303,10 +303,15 @@ matrix_sf* evaluate_expr_sf(char name, char *expr, bst_sf *root) {
     //final matrix on top
     matrix_sf *res = stack[top];
 
-    //rename result to name
-    res->name = name;
+    // free all other matrices below top (if any)
+    for (int i = 0; i < top; i++) {
+        if (!(stack[i]->name >= 'A' && stack[i]->name <= 'Z')) {
+            free(stack[i]);
+        }
+    }   
 
-    //free
+    res->name = name;
+    
     free(postfix);
 
     return res;
@@ -324,36 +329,40 @@ matrix_sf *execute_script_sf(char *filename) {
 
     while (getline(&line, &size, fp) != -1) {
 
-        //skip the empty lines
-        if (line[0] == '\n' || line[0] == '\0')
-            continue;
+        size_t len = strlen(line);
+        while (len && (line[len-1] == '\n' || line[len-1] == '\r')) line[--len] = '\0';
 
         //the name is the first non-space uppercase
         char *p = line;
-        while (*p == ' ') p++;
+        while (*p == ' '|| *p == '\t') p++;
+        if (*p == '\0') continue;
+
+        //the name is the first non-space uppercase
+        if (*p < 'A' || *p > 'Z') continue; 
         char name = *p;
 
-        // go past name, skip spaces, skip '='
         p++;
-        while (*p == ' ') p++;
-        p++; // skip '='
-        while (*p == ' ') p++;
+        while (*p == ' ' || *p == '\t') p++;
+        //only skip the = if it exists
+        if (*p == '=') p++;                 
+        while (*p == ' ' || *p == '\t') p++;
 
         // if the next character is a digit then its a matrix literal
+        matrix_sf *m = NULL;
+        // if the next character is a digit then its a matrix literal
         if (*p >= '0' && *p <= '9') {
-            matrix_sf *m = create_matrix_sf(name, p);
-            root = insert_bst_sf(m, root);
-            last = m;
+            m = create_matrix_sf(name, p);
         }
         // else if it's an expression
         else {
-            matrix_sf *m = evaluate_expr_sf(name, p, root);
-            root = insert_bst_sf(m, root);
-            last = m;
+            m = evaluate_expr_sf(name, p, root);
         }
+
+        root = insert_bst_sf(m, root);
+        last = m;
     }
 
-    free(line);
+    if (line) free(line);
     fclose(fp);
 
     matrix_sf *final = NULL;
@@ -371,7 +380,7 @@ matrix_sf *execute_script_sf(char *filename) {
 // the assignment. Feel equally free to ignore it.
 matrix_sf *copy_matrix(unsigned int num_rows, unsigned int num_cols, int values[]) {
     matrix_sf *m = malloc(sizeof(matrix_sf)+num_rows*num_cols*sizeof(int));
-    m->name = 'N';
+    m->name = '?';
     m->num_rows = num_rows;
     m->num_cols = num_cols;
     memcpy(m->values, values, num_rows*num_cols*sizeof(int));
