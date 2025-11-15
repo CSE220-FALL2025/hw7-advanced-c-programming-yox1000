@@ -271,9 +271,10 @@ matrix_sf* evaluate_expr_sf(char name, char *expr, bst_sf *root) {
             stack[++top] = R;
 
             //if A was temporary then free it
-            if (!(A->name >= 'A' && A->name <= 'Z')) {
+            if (A->name == '?') {
                 free(A);
             }
+
         }
         else if (ch == '+' || ch == '*') {
             //if binary operators (+ or *), pop two operands
@@ -291,12 +292,13 @@ matrix_sf* evaluate_expr_sf(char name, char *expr, bst_sf *root) {
             stack[++top] = R;
 
             // free temp operands
-            if (!(A->name >= 'A' && A->name <= 'Z')) {
+            if (A->name == '?') {
                 free(A);
             }
-            if (!(B->name >= 'A' && B->name <= 'Z')) {
+            if (B->name == '?') {
                 free(B);
             }
+
         }
     }
 
@@ -305,7 +307,7 @@ matrix_sf* evaluate_expr_sf(char name, char *expr, bst_sf *root) {
 
     // free all other matrices below top (if any)
     for (int i = 0; i < top; i++) {
-        if (!(stack[i]->name >= 'A' && stack[i]->name <= 'Z')) {
+        if (stack[i]->name == '?') {
             free(stack[i]);
         }
     }   
@@ -380,7 +382,7 @@ matrix_sf *execute_script_sf(char *filename) {
 // the assignment. Feel equally free to ignore it.
 matrix_sf *copy_matrix(unsigned int num_rows, unsigned int num_cols, int values[]) {
     matrix_sf *m = malloc(sizeof(matrix_sf)+num_rows*num_cols*sizeof(int));
-    m->name = '?';
+    m->name = 0;
     m->num_rows = num_rows;
     m->num_cols = num_cols;
     memcpy(m->values, values, num_rows*num_cols*sizeof(int));

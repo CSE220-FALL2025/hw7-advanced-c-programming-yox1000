@@ -1,10 +1,59 @@
 {
   "id": "Criterion v2.4.1",
-  "passed": 70,
+  "passed": 78,
   "failed": 0,
   "errored": 0,
   "skipped": 0,
   "test_suites": [
+    {
+      "name": "student_tests",
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "transpose",
+          "assertions": 15,
+          "status": "PASSED"
+        },
+        {
+          "name": "mult_identity",
+          "assertions": 15,
+          "status": "PASSED"
+        },
+        {
+          "name": "infix2postfix",
+          "assertions": 5,
+          "status": "PASSED"
+        },
+        {
+          "name": "execute_script_cases",
+          "assertions": 16,
+          "status": "PASSED"
+        },
+        {
+          "name": "evaluate_expr",
+          "assertions": 15,
+          "status": "PASSED"
+        },
+        {
+          "name": "create_matrix",
+          "assertions": 20,
+          "status": "PASSED"
+        },
+        {
+          "name": "bst_pipeline",
+          "assertions": 39,
+          "status": "PASSED"
+        },
+        {
+          "name": "add_negative",
+          "assertions": 15,
+          "status": "PASSED"
+        }
+      ]
+    },
     {
       "name": "base_operator_valgrind",
       "passed": 6,
@@ -267,17 +316,17 @@
           "status": "PASSED"
         },
         {
-          "name": "add_mats03",
-          "assertions": 1,
-          "status": "PASSED"
-        },
-        {
           "name": "mult_mats02",
           "assertions": 1,
           "status": "PASSED"
         },
         {
           "name": "mult_mats01",
+          "assertions": 1,
+          "status": "PASSED"
+        },
+        {
+          "name": "add_mats03",
           "assertions": 1,
           "status": "PASSED"
         },
@@ -434,12 +483,12 @@
       "skipped": 0,
       "tests": [
         {
-          "name": "create01",
+          "name": "create02",
           "assertions": 4,
           "status": "PASSED"
         },
         {
-          "name": "create02",
+          "name": "create01",
           "assertions": 4,
           "status": "PASSED"
         }
