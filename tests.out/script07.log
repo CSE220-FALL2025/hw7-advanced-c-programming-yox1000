@@ -1,0 +1,14 @@
+==320807== Memcheck, a memory error detector
+==320807== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==320807== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==320807== Command: ./bin/execute_script script07
+==320807== 
+3 4 20 -16 10 -46 61 -49 -2 -9 185 25 -21 -45
+==320807== 
+==320807== HEAP SUMMARY:
+==320807==     in use at exit: 0 bytes in 0 blocks
+==320807==   total heap usage: 15 allocs, 15 frees, 9,250 bytes allocated
+==320807== 
+==320807== All heap blocks were freed -- no leaks are possible
+==320807== 
+==320807== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

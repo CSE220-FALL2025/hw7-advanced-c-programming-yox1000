@@ -1,0 +1,14 @@
+==320817== Memcheck, a memory error detector
+==320817== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==320817== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==320817== Command: ./bin/execute_script script04
+==320817== 
+1 1 41058
+==320817== 
+==320817== HEAP SUMMARY:
+==320817==     in use at exit: 0 bytes in 0 blocks
+==320817==   total heap usage: 12 allocs, 12 frees, 8,981 bytes allocated
+==320817== 
+==320817== All heap blocks were freed -- no leaks are possible
+==320817== 
+==320817== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

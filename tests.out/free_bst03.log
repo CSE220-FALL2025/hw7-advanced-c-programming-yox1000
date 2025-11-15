@@ -1,0 +1,13 @@
+==321057== Memcheck, a memory error detector
+==321057== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==321057== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==321057== Command: ./bin/free_bst03
+==321057== 
+==321057== 
+==321057== HEAP SUMMARY:
+==321057==     in use at exit: 0 bytes in 0 blocks
+==321057==   total heap usage: 38 allocs, 38 frees, 684 bytes allocated
+==321057== 
+==321057== All heap blocks were freed -- no leaks are possible
+==321057== 
+==321057== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
